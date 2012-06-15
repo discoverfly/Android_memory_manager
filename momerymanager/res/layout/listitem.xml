@@ -3,32 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" >
-    
-    <ImageView 
-        android:id="@+id/img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        />
-    <LinearLayout android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-    <TextView 
+
+    <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFFFF"
-        android:textSize="22dp"
-        />
+        android:textColor="#FFFF00FF"
+        android:width="200dp"
+        android:textSize="22dp" />
     
-    <TextView
-        android:id="@+id/info"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFFFF"
-        android:textSize="13dp"
-        />
-        
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/pid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF00FFFF"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/memsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFFFF"
+            android:textSize="13dp" />
     </LinearLayout>
+
 </LinearLayout>

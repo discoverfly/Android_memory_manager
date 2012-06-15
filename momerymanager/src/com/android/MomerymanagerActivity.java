@@ -20,13 +20,10 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.Toast;
 import android.content.*;
+import android.os.*;
 
-/**
- * This activity allows you to have multiple views (in this case two {@link ListView}s)
- * in one tab activity.  The advantages over separate activities is that you can
- * maintain tab state much easier and you don't have to constantly re-create each tab
- * activity when the tab is selected.
- */
+
+@SuppressWarnings("deprecation")
 public class MomerymanagerActivity extends TabActivity implements OnTabChangeListener {
 
 	private static final String LIST1_TAB_TAG = "Activity";
@@ -42,20 +39,24 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		tabHost = getTabHost();
 		tabHost.setOnTabChangedListener(this);
 
-		tabHost.addTab(tabHost.newTabSpec(LIST1_TAB_TAG).setIndicator(LIST1_TAB_TAG).setContent(new TabHost.TabContentFactory() {
-			public View createTabContent(String tag) {
-				return getActivityInfo();
-			}
-		}));
+		tabHost.addTab(tabHost.newTabSpec(LIST1_TAB_TAG)
+				.setIndicator(LIST1_TAB_TAG,getResources().getDrawable(R.drawable.ic_launcher))
+				.setContent(new TabHost.TabContentFactory() {
+					public View createTabContent(String tag) {
+						return getActivityInfo();
+					}
+				}));
 
-		tabHost.addTab(tabHost.newTabSpec(LIST2_TAB_TAG).setIndicator(LIST2_TAB_TAG).setContent(new TabHost.TabContentFactory() {
-			public View createTabContent(String tag) {
-				return getServiceInfo();
-			}
-		}));
-		
+		tabHost.addTab(tabHost.newTabSpec(LIST2_TAB_TAG)
+				.setIndicator(LIST2_TAB_TAG,getResources().getDrawable(R.drawable.ic_launcher))
+				.setContent(new TabHost.TabContentFactory() {
+					public View createTabContent(String tag) {
+						return getServiceInfo();
+					}
+				}));
+
 	}
-	
+
 	public void onTabChanged(String tabName) {
 		if(tabName.equals(LIST2_TAB_TAG)) {
 			//do something
@@ -70,9 +71,9 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		ListView listView = (ListView) findViewById(R.id.list2);
 
 		List<String> listStrings = new ArrayList<String>();
-//		listStrings.add("Item 1");
-//		listStrings.add("Item 2");
-//		listStrings.add("Item 3");
+		//		listStrings.add("Item 1");
+		//		listStrings.add("Item 2");
+		//		listStrings.add("Item 3");
 		activityManager=(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE); 
 		List<ActivityManager.RunningServiceInfo> out = activityManager.getRunningServices(10);
 		String res = null;
@@ -83,10 +84,11 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 			listStrings.add(res);
 		}
 
-		listView.setAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, listStrings));
+		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));
+
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-			public void onItemClick(AdapterView parent, View view, int position, long id) { 
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
 				String item = (String) parent.getAdapter().getItem(position);
 				if(item != null){
 					((ArrayAdapter)parent.getAdapter()).remove(item);
@@ -100,20 +102,35 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	private View getActivityInfo() {
 
 		ListView listView = (ListView) findViewById(R.id.list1);
-		List<String> listStrings = new ArrayList<String>();
 		activityManager=(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE); 
 		List<ActivityManager.RunningAppProcessInfo> out = activityManager.getRunningAppProcesses();
-		String res = null;
+
+		Map<String,Object> tmap; 
 		String[] ars = null;
-		for (int i= 0; i  < out.size(); ++i){
-			res = out.get(i).toString();
-			ars = res.split("\\.|\\$|@");
-			listStrings.add(res);
-		}
+		List<Map<String,Object>> activityList = new ArrayList<Map<String,Object>>();
 		
-		listView.setAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, listStrings));
+		for (ActivityManager.RunningAppProcessInfo it:out){
+			tmap = new HashMap<String, Object>();
+			ars = it.processName.split("\\.");
+			tmap.put("title",ars[ars.length - 1]);
+			tmap.put("pid",it.pid);
+			int[] myMempid = new int[] { it.pid }; 
+			Debug.MemoryInfo[] memoryInfo = activityManager  
+					.getProcessMemoryInfo(myMempid);  
+			// 获取进程占内存用信息 kb单位  
+			int memSize = memoryInfo[0].dalvikPrivateDirty;  
+			tmap.put("memsize",memSize + " KB");
+			activityList.add(tmap);
+		}
+
+		SimpleAdapter activityAdapter = new SimpleAdapter(this,activityList,R.layout.listitem,
+				new String[]{"title","pid","memsize"},new int[]{R.id.title,R.id.pid,R.id.memsize});
+		listView.setAdapter(activityAdapter);
+
+		//List<ProcessInfo> processInfoList = new ArrayList<ProcessInfo>();
+
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-			public void onItemClick(AdapterView parent, View view, int position, long id) { 
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
 				String item = (String) parent.getAdapter().getItem(position);
 				if(item != null){
 					((ArrayAdapter)parent.getAdapter()).remove(item);
