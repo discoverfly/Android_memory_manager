@@ -3,62 +3,63 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="horizontal" >
-    
+
     <LinearLayout
         android:id="@+id/activity"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <ImageView 
-            android:src="@drawable/ic_launcher"
+        <ImageView
             android:id="@+id/imageviewone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:src="@drawable/ic_launcher" />
+
         <TextView
             android:id="@+id/activityView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Acitity" />
     </LinearLayout>
-    
-     <LinearLayout android:id="@+id/service" 
+
+    <LinearLayout
+        android:id="@+id/service"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        
-         <ImageView 
-            android:src="@drawable/ic_launcher"
+        android:orientation="vertical" >
+
+        <ImageView
             android:id="@+id/imageviewtwo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-         
-        <TextView 
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
             android:id="@+id/serviceView"
-            android:text="Service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:text="Service" />
     </LinearLayout>
-    
-    <LinearLayout android:id="@+id/others" 
+
+    <LinearLayout
+        android:id="@+id/others"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        
-        <ImageView 
-            android:src="@drawable/ic_launcher"
+        android:orientation="vertical" >
+
+        <ImageView
             android:id="@+id/imageviewthree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-        <TextView 
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
             android:id="@+id/othersView"
-            android:text="Others"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-    </LinearLayout>"
+            android:text="Others" />
+    </LinearLayout>
+"
+
 </LinearLayout>

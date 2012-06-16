@@ -4,14 +4,36 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/title"
+    <ImageView
+        android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFFF00FF"
-        android:width="200dp"
-        android:textSize="22dp" />
-    
+        android:layout_margin="5dp"
+        android:src="@drawable/helloworld"
+         />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF00"
+            android:textSize="15dp"
+            android:width="180dp" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#33FFFF00"
+            android:textSize="10dp"
+            android:width="180dp" />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,15 +43,15 @@
             android:id="@+id/pid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FF00FFFF"
-            android:textSize="18dp" />
+            android:textColor="#5FFF003F"
+            android:textSize="13dp" />
 
         <TextView
             android:id="@+id/memsize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFFFF"
-            android:textSize="13dp" />
+            android:textColor="#FFFF0000"
+            android:textSize="10dp" />
     </LinearLayout>
 
 </LinearLayout>
