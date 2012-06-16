@@ -1,6 +1,8 @@
 package com.android;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
@@ -22,10 +25,12 @@ import android.widget.Toast;
 import android.content.*;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.*;
+import android.widget.SimpleAdapter.ViewBinder;
 
 
-@SuppressWarnings("deprecation")
 public class MomerymanagerActivity extends TabActivity implements OnTabChangeListener {
 
 	private static final String LIST1_TAB_TAG = "Process";
@@ -42,7 +47,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		tabHost.setOnTabChangedListener(this);
 
 		tabHost.addTab(tabHost.newTabSpec(LIST1_TAB_TAG)
-				.setIndicator("Process",getApplicationContext().getResources().getDrawable(R.drawable.ic_launcher))
+				.setIndicator("Process",getApplicationContext().getResources().getDrawable(android.R.drawable.star_on))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
 						return getActivityInfo();
@@ -51,7 +56,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				);
 
 		tabHost.addTab(tabHost.newTabSpec(LIST2_TAB_TAG)
-				.setIndicator(LIST2_TAB_TAG,getApplicationContext().getResources().getDrawable(R.drawable.ic_launcher))
+				.setIndicator(LIST2_TAB_TAG,getApplicationContext().getResources().getDrawable(android.R.drawable.btn_star))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
 						return getServiceInfo();
@@ -113,28 +118,41 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		Packages pk = new Packages(this.getApplicationContext());
 		PackageManager pkm = this.getApplicationContext().getPackageManager();
 		ApplicationInfo appInfo;
-		
+
 		for (ActivityManager.RunningAppProcessInfo it:out){
 			tmap = new HashMap<String, Object>();
 			appInfo= pk.appInfo(it.processName);
-			tmap.put("icon",this.getResources().getDrawable(R.drawable.helloworld));
+			tmap.put("icon",appInfo.loadIcon(pkm));
+
 			tmap.put("title",appInfo.loadLabel(pkm).toString());
 			tmap.put("name",it.processName);
-			tmap.put("pid","PID: "+it.pid);
-			int[] myMempid = new int[] { it.pid }; 
+			tmap.put("pid"," PID: "+it.pid);
+			int[] myMempid = new int[] { it.pid };
 			Debug.MemoryInfo[] memoryInfo = activityManager  
 					.getProcessMemoryInfo(myMempid);  
 
 			int memSize = memoryInfo[0].dalvikPrivateDirty;  // 获取进程占内存用信息 kb单位  
-			tmap.put("memsize","MEM: " + memSize + " KB");
+			tmap.put("memsize","   MEM: " + memSize + " KB");
 			activityList.add(tmap);
 		}
-
+		
 		SimpleAdapter activityAdapter =
 				new SimpleAdapter(this,activityList,R.layout.listitem,
-				new String[]{"icon","title","name","pid","memsize"},
-				new int[]{R.id.icon,R.id.title,R.id.name,R.id.pid,R.id.memsize});
-		
+						new String[]{"icon","title","name","pid","memsize"},
+						new int[]{R.id.icon,R.id.title,R.id.name,R.id.pid,R.id.memsize});
+
+		activityAdapter.setViewBinder(new ViewBinder() {
+			
+			public boolean setViewValue(View view, Object data, String textRepresentation) {
+				if ((view instanceof ImageView) && (data instanceof Drawable)) {
+					ImageView iv = (ImageView) view;
+					iv.setImageDrawable((Drawable)data);
+					return true;
+				}
+				return false;
+			}
+		});
+	
 		listView.setAdapter(activityAdapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){

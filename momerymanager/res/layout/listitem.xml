@@ -8,9 +8,7 @@
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:src="@drawable/helloworld"
-         />
+        android:layout_margin="5dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -22,36 +20,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF00"
-            android:textSize="15dp"
-            android:width="180dp" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#33FFFF00"
-            android:textSize="10dp"
-            android:width="180dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/pid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#5FFF003F"
-            android:textSize="13dp" />
-
-        <TextView
-            android:id="@+id/memsize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#FFFF0000"
             android:textSize="10dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/pid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FF3F4510"
+                android:textSize="11dp" />
+
+            <TextView
+                android:id="@+id/memsize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFF0000"
+                android:textSize="10dp" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
