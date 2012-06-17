@@ -50,7 +50,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				.setIndicator("Process",getApplicationContext().getResources().getDrawable(android.R.drawable.star_on))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
-						return getActivityInfo();
+						return getActivityInfoView();
 					}
 				})
 				);
@@ -93,7 +93,6 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 
 		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));
 
-
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
 				String item = (String) parent.getAdapter().getItem(position);
@@ -106,43 +105,16 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		return listView;
 	}
 
-	private View getActivityInfo() {
+	private View getActivityInfoView() {
 
 		ListView listView = (ListView) findViewById(R.id.list1);
-		activityManager=(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE); 
-		List<ActivityManager.RunningAppProcessInfo> out = activityManager.getRunningAppProcesses();
-
-		Map<String,Object> tmap; 
-
-		List<Map<String,Object>> activityList = new ArrayList<Map<String,Object>>();
-		Packages pk = new Packages(this.getApplicationContext());
-		PackageManager pkm = this.getApplicationContext().getPackageManager();
-		ApplicationInfo appInfo;
-
-		for (ActivityManager.RunningAppProcessInfo it:out){
-			tmap = new HashMap<String, Object>();
-			appInfo= pk.appInfo(it.processName);
-			tmap.put("icon",appInfo.loadIcon(pkm));
-
-			tmap.put("title",appInfo.loadLabel(pkm).toString());
-			tmap.put("name",it.processName);
-			tmap.put("pid"," PID: "+it.pid);
-			int[] myMempid = new int[] { it.pid };
-			Debug.MemoryInfo[] memoryInfo = activityManager  
-					.getProcessMemoryInfo(myMempid);  
-
-			int memSize = memoryInfo[0].dalvikPrivateDirty;  // 获取进程占内存用信息 kb单位  
-			tmap.put("memsize","   MEM: " + memSize + " KB");
-			activityList.add(tmap);
-		}
-		
+		List<Map<String,Object>> activityList = getProcessAdapterList();
 		SimpleAdapter activityAdapter =
 				new SimpleAdapter(this,activityList,R.layout.listitem,
 						new String[]{"icon","title","name","pid","memsize"},
 						new int[]{R.id.icon,R.id.title,R.id.name,R.id.pid,R.id.memsize});
 
 		activityAdapter.setViewBinder(new ViewBinder() {
-			
 			public boolean setViewValue(View view, Object data, String textRepresentation) {
 				if ((view instanceof ImageView) && (data instanceof Drawable)) {
 					ImageView iv = (ImageView) view;
@@ -152,9 +124,9 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				return false;
 			}
 		});
-	
 		listView.setAdapter(activityAdapter);
 
+		
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
 				Map<String,Object> item = (Map<String,Object>) parent.getAdapter().getItem(position);
@@ -164,6 +136,23 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 			}
 		});
 		return listView;
+	}
+	
+	public List<Map<String,Object>> getProcessAdapterList(){
+		Map<String,Object> tmap; 
+		List<Map<String,Object>> activityList = new ArrayList<Map<String,Object>>();
+		Packages pk = new Packages(this.getApplicationContext());
+		ArrayList<Process> pArrayList = pk.getProcesList();
+		for (Process it: pArrayList){
+			tmap = new HashMap<String, Object>();
+			tmap.put("icon",it.getIcon());
+			tmap.put("title",it.getTitle());
+			tmap.put("name",it.getProcessName());
+			tmap.put("pid"," PID: " + it.getPid());
+			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB");
+			activityList.add(tmap);
+		}
+		return activityList;
 	}
 
 }
