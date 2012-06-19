@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 public class Process implements Comparable<Process>{
 	private String title;
 	private String processName;
+	private String packageName;
 	private int pid;
 	private int memSize;
 	private Drawable icon;
@@ -12,9 +13,10 @@ public class Process implements Comparable<Process>{
 	public Process(){	
 	}
 	
-	public Process(String ttitle,String pN, int pId, int mS, Drawable ticon){
+	public Process(String ttitle,String pN,String pkN, int pId, int mS, Drawable ticon){
 		title = ttitle;
 		processName = pN;
+		packageName = pkN;
 		pid = pId;
 		memSize = mS;
 		icon = ticon;
@@ -25,6 +27,10 @@ public class Process implements Comparable<Process>{
 	}
 	public String getProcessName(){
 		return processName;
+	}
+	
+	public String getPackageName(){
+		return packageName;
 	}
 	
 	public int getPid(){
@@ -46,6 +52,9 @@ public class Process implements Comparable<Process>{
 		processName = tprocessName;
 	}
 	
+	public void setPackageName(String tpackageName){
+		packageName = tpackageName;
+	}
 	public void setPid(int tpid){
 		pid = tpid;
 	}

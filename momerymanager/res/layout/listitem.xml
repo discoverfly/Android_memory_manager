@@ -26,9 +26,15 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#33FFFF00"
+            android:textColor="#5FFFFF00"
             android:textSize="10dp" />
 
+        <TextView
+                android:id="@+id/packagename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FF00FF00"
+                android:textSize="12dp" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,15 +44,16 @@
                 android:id="@+id/pid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FF3F4510"
-                android:textSize="11dp" />
+                android:textColor="#FF00FF00"
+                android:textSize="12dp" />
 
             <TextView
                 android:id="@+id/memsize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFF0000"
-                android:textSize="10dp" />
+                android:textColor="#FF00FF00"
+                android:textSize="12dp" />
+            
         </LinearLayout>
     </LinearLayout>
 

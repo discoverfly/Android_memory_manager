@@ -38,7 +38,8 @@ public class Packages {
 
 			temp.setPid(it.pid);
 			temp.setIcon(appInfo.loadIcon(pm));
-			temp.setProcessName(it.processName); 
+			temp.setProcessName(it.processName);
+			temp.setPackageName(appInfo.packageName);
 			temp.setTitle(appInfo.loadLabel(pm).toString());
 			temp.setMemSize(getMemSize(new int[]{it.pid}));
 			
