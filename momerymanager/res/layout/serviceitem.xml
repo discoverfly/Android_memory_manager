@@ -5,7 +5,7 @@
     android:orientation="horizontal" >
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/serviceicon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp" />
@@ -16,21 +16,21 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/servicetitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF00"
             android:textSize="15dp" />
 
         <TextView
-            android:id="@+id/packagename"
+            android:id="@+id/servicepackagename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#5FFFFF00"
             android:textSize="12dp" />
 
         <TextView
-            android:id="@+id/uid"
+            android:id="@+id/serviceuid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#5F3FFF00"
@@ -43,14 +43,14 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/pid"
+                android:id="@+id/servicepid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FF00FF00"
                 android:textSize="12dp" />
 
             <TextView
-                android:id="@+id/memsize"
+                android:id="@+id/servicememsize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FF00FF00"

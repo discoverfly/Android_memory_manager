@@ -41,7 +41,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	private static final String LIST3_TAB_TAG = "Service";
 	private TabHost tabHost;
 	private ActivityManager activityManager; 
-	private List<Map<String,Object>> activityList;
+	private List<Map<String,Object>> processList;
+	private List<Map<String,Object>> serviceList;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,7 +55,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				.setIndicator("Process",getApplicationContext().getResources().getDrawable(R.drawable.process))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
-						return getActivityInfoView();
+						return getProcessInfoView();
 					}
 				})
 				);
@@ -89,37 +90,12 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		}
 	}
 
-	private View getServiceInfoView() {
 
-		ListView listView = (ListView) findViewById(R.id.list3);
-		List<String> listStrings = new ArrayList<String>();
-		List<ActivityManager.RunningServiceInfo> out = activityManager.getRunningServices(10);
-		String res = null;
-		for (ActivityManager.RunningServiceInfo it:out){
-			res = it.toString();
-
-			listStrings.add(res);
-		}
-
-		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));
-
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
-				String item = (String) parent.getAdapter().getItem(position);
-				if(item != null){
-					((ArrayAdapter)parent.getAdapter()).remove(item);
-					Toast.makeText(getApplicationContext(), item + " has been removed", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-		return listView;
-	}
-
-	private View getActivityInfoView() {
+	private View getProcessInfoView() {
 
 		ListView listView = (ListView) findViewById(R.id.list1);
 		SimpleAdapter processAdapter = getProcessAdapter();
-		listView.setAdapter(getProcessAdapter());
+		listView.setAdapter(processAdapter);
 
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -131,8 +107,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						String packageName = (String)activityList.get(position).get("pkgname");
-						String processName = (String)activityList.get(position).get("name");
+						String packageName = (String)processList.get(position).get("pkgname");
+						String processName = (String)processList.get(position).get("name");
 						//Toast.makeText(getApplicationContext(), processName + "to be removed", Toast.LENGTH_SHORT).show();
 						activityManager.killBackgroundProcesses(packageName);
 						Log.i("OnClick", processName + " ~~ " + packageName);
@@ -141,7 +117,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 						listView.setAdapter(getProcessAdapter());
 					}
 				}).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-					
+
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
 						dialog.cancel();
@@ -152,57 +128,32 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		return listView;
 	}
 
-	public View getTaskInfoView(){
-		ListView listView = (ListView) findViewById(R.id.list2);
-
-		List<String> listStrings = new ArrayList<String>();
-
-		activityManager=(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE); 
-		List<ActivityManager.RunningTaskInfo> out = activityManager.getRunningTasks(10);
-		String res = null;
-		for (ActivityManager.RunningTaskInfo it:out){
-			res = it.toString();
-			listStrings.add(res);
-		}
-
-		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));
-
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
-				String item = (String) parent.getAdapter().getItem(position);
-				if(item != null){
-					((ArrayAdapter)parent.getAdapter()).remove(item);
-					Toast.makeText(getApplicationContext(), item + " has been removed", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-		return listView;
-	}
 
 	public List<Map<String,Object>> getProcessAdapterList(){
 		Map<String,Object> tmap; 
-		List<Map<String,Object>> activityList = new ArrayList<Map<String,Object>>();
+		List<Map<String,Object>> processList = new ArrayList<Map<String,Object>>();
 		Packages pk = new Packages(this.getApplicationContext());
 		ArrayList<Process> pArrayList = pk.getProcesList();
 		for (Process it: pArrayList){
 			tmap = new HashMap<String, Object>();
 			tmap.put("icon",it.getIcon());
 			tmap.put("title",it.getTitle());
-			tmap.put("name",it.getProcessName() + "  ");
+			//tmap.put("name",it.getProcessName() + "  ");
 			tmap.put("pkgname",it.getPackageName());
-			tmap.put("pid"," PID: " + it.getPid());
+			tmap.put("uid", "UID: " + it.getUid());
+			tmap.put("pid","PID: " + it.getPid());
 			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB");
-			activityList.add(tmap);
+			processList.add(tmap);
 		}
-		return activityList;
+		return processList;
 	}
 	public SimpleAdapter getProcessAdapter()
 	{
-		activityList = getProcessAdapterList();
+		processList = getProcessAdapterList();
 		SimpleAdapter processAdapter =
-				new SimpleAdapter(this,activityList,R.layout.listitem,
-						new String[]{"icon","title","name","pkgname","pid","memsize"},
-						new int[]{R.id.icon,R.id.title,R.id.name,R.id.packagename,R.id.pid,R.id.memsize});
+				new SimpleAdapter(this,processList,R.layout.listitem,
+						new String[]{"icon","title","pkgname","uid","pid","memsize"},
+						new int[]{R.id.icon,R.id.title,R.id.packagename,R.id.uid,R.id.pid,R.id.memsize});
 
 		processAdapter.setViewBinder(new ViewBinder() {
 			public boolean setViewValue(View view, Object data, String textRepresentation) {
@@ -215,6 +166,106 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 			}
 		});
 		return processAdapter;
+	}
+
+	public View getTaskInfoView(){
+		ListView listView = (ListView) findViewById(R.id.list2);
+
+
+		List<String> listStrings = new ArrayList<String>();
+
+		List<ActivityManager.RunningTaskInfo> out = activityManager.getRunningTasks(10);
+		String res = null;
+		for (ActivityManager.RunningTaskInfo it:out){
+			res = it.toString();
+			if (it.description != null)Log.i("Task",it.description.toString());
+			listStrings.add(res);
+		}
+
+		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));
+
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
+				String item = (String) parent.getAdapter().getItem(position);
+				if(item != null){
+					((ArrayAdapter)parent.getAdapter()).remove(item);
+					Toast.makeText(getApplicationContext(), item + " has been removed", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+		return listView;
+	}
+
+	private View getServiceInfoView() {
+
+		ListView listView = (ListView) findViewById(R.id.list3);
+		SimpleAdapter serviceAdapter = getServiceAdapter();
+		listView.setAdapter(serviceAdapter);
+		//		List<String> listStrings = new ArrayList<String>();
+		//		
+		//		List<ActivityManager.RunningServiceInfo> out = activityManager.getRunningServices(10);
+		//		String res = null;
+		//		for (ActivityManager.RunningServiceInfo it:out){
+		//			res = it.toString();
+		//			if (it.process != null) Log.i("Service", it.process);
+		//			listStrings.add(res);
+		//		}
+		//
+		//		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));
+		//
+		//		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+		//			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
+		//				String item = (String) parent.getAdapter().getItem(position);
+		//				if(item != null){
+		//					((ArrayAdapter)parent.getAdapter()).remove(item);
+		//					Toast.makeText(getApplicationContext(), item + " has been removed", Toast.LENGTH_SHORT).show();
+		//				}
+		//			}
+		//		});
+		return listView;
+	}
+
+	public SimpleAdapter getServiceAdapter(){
+		serviceList = getServiceAdapterList();
+		Log.i("serviceList Size",serviceList.size() + " ");
+		SimpleAdapter serviceAdapter =
+				new SimpleAdapter(this,serviceList,R.layout.serviceitem,
+						new String[]{"icon","title","pkgname","uid","pid","memsize"},
+						new int[]{R.id.serviceicon,R.id.servicetitle,
+						R.id.servicepackagename,R.id.serviceuid, R.id.servicepid,R.id.servicememsize});
+
+		serviceAdapter.setViewBinder(new ViewBinder() {
+			public boolean setViewValue(View view, Object data, String textRepresentation) {
+				if ((view instanceof ImageView) && (data instanceof Drawable)) {
+					ImageView iv = (ImageView) view;
+					iv.setImageDrawable((Drawable)data);
+					return true;
+				}
+				return false;
+			}
+		});
+		return serviceAdapter;
+	}
+
+	private List<Map<String, Object>> getServiceAdapterList() {
+		// TODO Auto-generated method stub
+		Map<String,Object> tmap; 
+		List<Map<String,Object>> serviceList = new ArrayList<Map<String,Object>>();
+		Packages pk = new Packages(this.getApplicationContext());
+		ArrayList<Process> pArrayList = pk.getServiceList();
+		Log.i("serviceList Size",pArrayList.size() + " ");
+		for (Process it: pArrayList){
+			tmap = new HashMap<String, Object>();
+			tmap.put("icon",it.getIcon());
+			tmap.put("title",it.getTitle());
+			//tmap.put("name",it.getProcessName() + "  ");
+			tmap.put("pkgname",it.getPackageName());
+			tmap.put("pid"," PID: " + it.getPid());
+			tmap.put("uid", "UID: " + it.getUid());
+			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB");
+			serviceList.add(tmap);
+		}
+		return serviceList;
 	}
 }
 
