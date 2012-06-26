@@ -13,8 +13,11 @@ public class Packages {
 	ActivityManager activityManager = null;
 	List<ActivityManager.RunningAppProcessInfo> processInfoList = null;
 	List<ActivityManager.RunningServiceInfo> serviceInfoList = null;
+	ProcessMemoryUtil pmu = null;
 	Packages(Context context){
 		pm = context.getApplicationContext().getPackageManager();
+		pmu = new ProcessMemoryUtil();
+		pmu.initPMUtil();
 		activityManager=(ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE); 
 		allAppInfoList = pm.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
 		processInfoList= activityManager.getRunningAppProcesses();
@@ -42,6 +45,7 @@ public class Packages {
 			temp.setPid(it.pid);
 			temp.setUid(it.uid);
 			temp.setIcon(appInfo.loadIcon(pm));
+			temp.setCpuPercent(pmu.getCpuInfoByPid(it.pid));
 			temp.setProcessName(it.processName);
 			temp.setPackageName(appInfo.packageName);
 			temp.setTitle(appInfo.loadLabel(pm).toString());
@@ -61,7 +65,6 @@ public class Packages {
 			temp = new Process();
 			Log.i("service",it.process);
 			appInfo = getAppInfo(it.process);
-
 			temp.setPid(it.pid);
 			temp.setUid(it.uid);
 			temp.setIcon(appInfo.loadIcon(pm));

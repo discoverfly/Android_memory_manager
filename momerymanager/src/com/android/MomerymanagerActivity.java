@@ -45,6 +45,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	private List<Map<String,Object>> serviceList;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabs);
 
@@ -59,7 +60,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 					}
 				})
 				);
-		tabHost.addTab(tabHost.newTabSpec(LIST3_TAB_TAG)
+		tabHost.addTab(tabHost.newTabSpec(LIST2_TAB_TAG)
 				.setIndicator("Task",getApplicationContext().getResources().getDrawable(R.drawable.ic_launcher))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
@@ -76,6 +77,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 					}
 				})
 				);
+		
 
 	}
 
@@ -138,11 +140,11 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 			tmap = new HashMap<String, Object>();
 			tmap.put("icon",it.getIcon());
 			tmap.put("title",it.getTitle());
-			//tmap.put("name",it.getProcessName() + "  ");
+			tmap.put("cpu", "  CPU: " + it.getcpuPercent());
 			tmap.put("pkgname",it.getPackageName());
 			tmap.put("uid", "UID: " + it.getUid());
 			tmap.put("pid","PID: " + it.getPid());
-			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB");
+			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB " + it.getcpuPercent());
 			processList.add(tmap);
 		}
 		return processList;
@@ -152,8 +154,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		processList = getProcessAdapterList();
 		SimpleAdapter processAdapter =
 				new SimpleAdapter(this,processList,R.layout.listitem,
-						new String[]{"icon","title","pkgname","uid","pid","memsize"},
-						new int[]{R.id.icon,R.id.title,R.id.packagename,R.id.uid,R.id.pid,R.id.memsize});
+						new String[]{"icon","title","pkgname","uid","cpu","pid","memsize"},
+						new int[]{R.id.icon,R.id.title,R.id.packagename,R.id.uid,R.id.cpu, R.id.pid,R.id.memsize});
 
 		processAdapter.setViewBinder(new ViewBinder() {
 			public boolean setViewValue(View view, Object data, String textRepresentation) {
@@ -175,11 +177,15 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		List<String> listStrings = new ArrayList<String>();
 
 		List<ActivityManager.RunningTaskInfo> out = activityManager.getRunningTasks(10);
-		String res = null;
+		StringBuffer res = new StringBuffer();
 		for (ActivityManager.RunningTaskInfo it:out){
-			res = it.toString();
+			res = new StringBuffer();
+			res.append("~name: " +it.toString());
+			res.append("\n~id : " + it.id);
+			res.append("\n~numActivities: " + it.numActivities);
+			res.append("\n~description: " + it.description);
 			if (it.description != null)Log.i("Task",it.description.toString());
-			listStrings.add(res);
+			listStrings.add(res.toString());
 		}
 
 		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));

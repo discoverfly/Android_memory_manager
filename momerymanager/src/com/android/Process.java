@@ -9,6 +9,7 @@ public class Process implements Comparable<Process>{
 	private int pid;
 	private int uid;
 	private int memSize;
+	private String cpuPercent;
 	private Drawable icon;
 	
 	public Process(){	
@@ -47,6 +48,12 @@ public class Process implements Comparable<Process>{
 		return memSize;
 	}
 	
+	public String getcpuPercent(){
+		return cpuPercent;
+	}
+	
+	
+	
 	public Drawable getIcon(){
 		return icon;
 	}
@@ -71,6 +78,10 @@ public class Process implements Comparable<Process>{
 	
 	public void setMemSize(int tmemSize){
 		memSize = tmemSize;
+	}
+	
+	public void setCpuPercent(String tcpuPercent){
+		cpuPercent = tcpuPercent;
 	}
 	
 	public void setIcon(Drawable ticon){
