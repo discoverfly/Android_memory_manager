@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -77,9 +78,16 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 					}
 				})
 				);
-		
-
 	}
+	
+	public boolean onCreateOptionsMenu(Menu menu){
+		super.onCreateOptionsMenu(menu);
+		menu.add(0,0,0,"AutoComplete");
+		menu.add(0,1,1,"Two");
+		return true;
+	}
+	
+	
 
 	public void onTabChanged(String tabName) {
 		if(tabName.equals(LIST1_TAB_TAG)) {
