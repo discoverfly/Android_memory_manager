@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +26,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 import android.content.*;
 import android.content.pm.ApplicationInfo;
@@ -40,24 +42,32 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	private static final String LIST1_TAB_TAG = "Process";
 	private static final String LIST2_TAB_TAG = "Task";
 	private static final String LIST3_TAB_TAG = "Service";
+	
+	private final String[] menuTitle = {"Kill selected processes","exit"};
+	private final int[] menuID = {Menu.FIRST + 1, Menu.FIRST + 2};
 	private TabHost tabHost;
-	private ActivityManager activityManager; 
+	private TabSpec processTab, taskTab, serviceTab;
+	private SimpleAdapter processAdapter;
+	private View processView, taskView,  serviceView; 
+	private ActivityManager activityManager;
 	private List<Map<String,Object>> processList;
 	private List<Map<String,Object>> serviceList;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabs);
 
 		tabHost = getTabHost();
 		tabHost.setOnTabChangedListener(this);
 		activityManager=(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE); 
-		tabHost.addTab(tabHost.newTabSpec(LIST1_TAB_TAG)
+		processTab = tabHost.newTabSpec(LIST1_TAB_TAG);
+		tabHost.addTab(processTab
 				.setIndicator("Process",getApplicationContext().getResources().getDrawable(R.drawable.process))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
-						return getProcessInfoView();
+						 processView = getProcessInfoView();
+						 return processView;
 					}
 				})
 				);
@@ -65,7 +75,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				.setIndicator("Task",getApplicationContext().getResources().getDrawable(R.drawable.ic_launcher))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
-						return getTaskInfoView();
+						taskView = getTaskInfoView();
+						return taskView;
 					}
 				})
 				);
@@ -74,20 +85,44 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				.setIndicator(LIST3_TAB_TAG,getApplicationContext().getResources().getDrawable(R.drawable.task))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
-						return getServiceInfoView();
+						serviceView = getServiceInfoView();
+						return serviceView;
 					}
 				})
 				);
 	}
-	
+
 	public boolean onCreateOptionsMenu(Menu menu){
 		super.onCreateOptionsMenu(menu);
-		menu.add(0,0,0,"AutoComplete");
-		menu.add(0,1,1,"Two");
+		for (int i = 0; i < menuID.length; ++i){
+			menu.add(Menu.NONE,menuID[i],Menu.NONE, menuTitle[i]);
+		}
 		return true;
 	}
 	
-	
+	public boolean onOptionsItemSelected(MenuItem item){
+		return (applyMenuChoice(item)||super.onOptionsItemSelected(item));
+	}
+
+	public boolean applyMenuChoice(MenuItem item){
+		switch(item.getItemId()){
+		case Menu.FIRST + 1:
+			Log.i("menu", "to KILL");
+			Toast.makeText(getApplicationContext(), "to KIll", Toast.LENGTH_SHORT);
+			killSelectedProcess();
+			processAdapter = getProcessAdapter();
+			((ListView)processView).setAdapter(processAdapter);
+			return true;
+		case Menu.FIRST + 2:
+			return true;
+		}
+		return false;
+	}
+
+	public void killSelectedProcess(){
+		
+	}
+
 
 	public void onTabChanged(String tabName) {
 		if(tabName.equals(LIST1_TAB_TAG)) {
@@ -104,9 +139,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	private View getProcessInfoView() {
 
 		ListView listView = (ListView) findViewById(R.id.list1);
-		SimpleAdapter processAdapter = getProcessAdapter();
+		processAdapter = getProcessAdapter();
 		listView.setAdapter(processAdapter);
-
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
@@ -135,6 +169,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				}).create().show();
 			}
 		});
+		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		return listView;
 	}
 
@@ -152,7 +187,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 			tmap.put("pkgname",it.getPackageName());
 			tmap.put("uid", "UID: " + it.getUid());
 			tmap.put("pid","PID: " + it.getPid());
-			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB " + it.getcpuPercent());
+			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB ");
 			processList.add(tmap);
 		}
 		return processList;
@@ -207,6 +242,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				}
 			}
 		});
+
+
 		return listView;
 	}
 

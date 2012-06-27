@@ -11,7 +11,7 @@
         android:layout_margin="5dp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="200dip"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
@@ -20,14 +20,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF00"
-            android:textSize="15dp" />
+            android:textSize="15dip" />
 
         <TextView
             android:id="@+id/packagename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#5FFFFF00"
-            android:textSize="12dp" />
+            android:textSize="10dip" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -39,15 +39,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#5F3FFF00"
-                android:textSize="12dp" />
-            />
-
+                android:textSize="10dip" />
+            />
             <TextView
                 android:id="@+id/cpu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#5F3FFF00"
-                android:textSize="12dp" />
+                android:textSize="10dip" />
             />
         </LinearLayout>
 
@@ -60,16 +59,22 @@
                 android:id="@+id/pid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FF00FF00"
-                android:textSize="12dp" />
+                android:textColor="#FF3FFF00"
+                android:textSize="12dip" />
 
             <TextView
                 android:id="@+id/memsize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FF00FF00"
-                android:textSize="12dp" />
+                android:textColor="#FF3FFF00"
+                android:textSize="12dip" />
         </LinearLayout>
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/pchose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="False" />
 
 </LinearLayout>
