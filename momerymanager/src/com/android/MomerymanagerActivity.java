@@ -21,12 +21,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.content.*;
 import android.content.pm.ApplicationInfo;
@@ -42,12 +44,13 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	private static final String LIST1_TAB_TAG = "Process";
 	private static final String LIST2_TAB_TAG = "Task";
 	private static final String LIST3_TAB_TAG = "Service";
-	
-	private final String[] menuTitle = {"Kill selected processes","exit"};
-	private final int[] menuID = {Menu.FIRST + 1, Menu.FIRST + 2};
+
+	private final String[] menuTitle = {"Kill selected processes","Select all","Not select any","Exit"};
+	private final int[] menuID = {Menu.FIRST + 1, Menu.FIRST + 2,Menu.FIRST + 3, Menu.FIRST + 4};
 	private TabHost tabHost;
 	private TabSpec processTab, taskTab, serviceTab;
 	private SimpleAdapter processAdapter;
+	private List<String> toBeKilledProcess = null; 
 	private View processView, taskView,  serviceView; 
 	private ActivityManager activityManager;
 	private List<Map<String,Object>> processList;
@@ -61,13 +64,14 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		tabHost = getTabHost();
 		tabHost.setOnTabChangedListener(this);
 		activityManager=(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE); 
+		toBeKilledProcess = new ArrayList<String>();
 		processTab = tabHost.newTabSpec(LIST1_TAB_TAG);
 		tabHost.addTab(processTab
 				.setIndicator("Process",getApplicationContext().getResources().getDrawable(R.drawable.process))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
-						 processView = getProcessInfoView();
-						 return processView;
+						processView = getProcessInfoView();
+						return processView;
 					}
 				})
 				);
@@ -99,7 +103,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		}
 		return true;
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item){
 		return (applyMenuChoice(item)||super.onOptionsItemSelected(item));
 	}
@@ -108,11 +112,11 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		switch(item.getItemId()){
 		case Menu.FIRST + 1:
 			Log.i("menu", "to KILL");
-			Toast.makeText(getApplicationContext(), "to KIll", Toast.LENGTH_SHORT);
-			killSelectedProcess();
-			processAdapter = getProcessAdapter();
-			((ListView)processView).setAdapter(processAdapter);
-			return true;
+		//Toast.makeText(getApplicationContext(), "to KIll", Toast.LENGTH_SHORT).show();
+		killSelectedProcess();
+		processAdapter = getProcessAdapter();
+		((ListView)processView).setAdapter(processAdapter);
+		return true;
 		case Menu.FIRST + 2:
 			return true;
 		}
@@ -120,7 +124,27 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	}
 
 	public void killSelectedProcess(){
-		
+
+		int cnt = 0;
+		String packageName;
+		View it;
+		int j = 0;
+		for (int i = ((ListView)processView).getFirstVisiblePosition(); i < ((ListView)processView).getCount(); ++i,++j){
+			
+			it  = (View)((ListView)processView).getChildAt(i);
+			if (it != null)
+			{
+				CheckBox c = (CheckBox)it.findViewById(R.id.pchose);
+				if (c.isChecked()){
+					packageName  = (String) processList.get(j).get("pkgname");
+					activityManager.killBackgroundProcesses(packageName);
+					Log.i("Kill ", " " +  packageName);
+				}
+				//TextView tv  = (TextView) it.findViewWithTag(R.id.packagename);
+				Log.i("in list View", " " + c.isChecked());
+			}
+		}
+		Log.i("to Kill size ", toBeKilledProcess.size() + " ");
 	}
 
 
@@ -142,33 +166,44 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		processAdapter = getProcessAdapter();
 		listView.setAdapter(processAdapter);
 
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
-			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) { 
-				new AlertDialog.Builder(parent.getContext())
-				.setMessage("Kill the process?")
-				.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						String packageName = (String)processList.get(position).get("pkgname");
-						String processName = (String)processList.get(position).get("name");
-						//Toast.makeText(getApplicationContext(), processName + "to be removed", Toast.LENGTH_SHORT).show();
-						activityManager.killBackgroundProcesses(packageName);
-						Log.i("OnClick", processName + " ~~ " + packageName);
-						ListView listView = (ListView) findViewById(R.id.list1);
-						SimpleAdapter processAdapter = getProcessAdapter();
-						listView.setAdapter(getProcessAdapter());
-					}
-				}).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						dialog.cancel();
-					}
-				}).create().show();
-			}
-		});
+		//		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+		//
+		//			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+		//				if (toBeKilledProcess == null) toBeKilledProcess = new ArrayList<String>();
+		//				
+		//				String packageName = (String)processList.get(position).get("pkgname");
+		//				String processName = (String)processList.get(position).get("name");
+		//				Log.i("OnClick", processName + " ~~ " + packageName);
+		//				toBeKilledProcess.add(packageName);
+		//			}
+		//				new AlertDialog.Builder(parent.getContext())
+		//				.setMessage("Kill the process?")
+		//				.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+		//
+		//					public void onClick(DialogInterface dialog, int which) {
+		//						// TODO Auto-generated method stub
+		//						if (toBeKilledProcess == null) toBeKilledProcess = new ArrayList<String>();
+		//						String packageName = (String)processList.get(position).get("pkgname");
+		//						String processName = (String)processList.get(position).get("name");
+		//						toBeKilledProcess.add(packageName);
+		//						//Toast.makeText(getApplicationContext(), processName + "to be removed", Toast.LENGTH_SHORT).show();
+		//						//activityManager.killBackgroundProcesses(packageName);
+		//						Log.i("OnClick", processName + " ~~ " + packageName);
+		//						//ListView listView = (ListView) findViewById(R.id.list1);
+		//						//SimpleAdapter processAdapter = getProcessAdapter();
+		//						//listView.setAdapter(getProcessAdapter());
+		//					}
+		//				}).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+		//
+		//					public void onClick(DialogInterface dialog, int which) {
+		//						// TODO Auto-generated method stub
+		//						dialog.cancel();
+		//					}
+		//				}).create().show();
+		//			}
+		//});
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		return listView;
 	}
@@ -187,6 +222,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 			tmap.put("pkgname",it.getPackageName());
 			tmap.put("uid", "UID: " + it.getUid());
 			tmap.put("pid","PID: " + it.getPid());
+			tmap.put("check", false);
 			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB ");
 			processList.add(tmap);
 		}
@@ -197,8 +233,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		processList = getProcessAdapterList();
 		SimpleAdapter processAdapter =
 				new SimpleAdapter(this,processList,R.layout.listitem,
-						new String[]{"icon","title","pkgname","uid","cpu","pid","memsize"},
-						new int[]{R.id.icon,R.id.title,R.id.packagename,R.id.uid,R.id.cpu, R.id.pid,R.id.memsize});
+						new String[]{"icon","title","pkgname","uid","cpu","pid","memsize","check"},
+						new int[]{R.id.icon,R.id.title,R.id.packagename,R.id.uid,R.id.cpu, R.id.pid,R.id.memsize, R.id.pchose});
 
 		processAdapter.setViewBinder(new ViewBinder() {
 			public boolean setViewValue(View view, Object data, String textRepresentation) {

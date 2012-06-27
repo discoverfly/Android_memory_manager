@@ -49,7 +49,7 @@ public class ProcessMemoryUtil {
 		rows = infoString.split("[\n]+");        // 使用正则表达式分割字符串
 
 		for (int i = 0; i < rows.length; i++) {
-			Log.i("cmd", rows[i]);
+			//Log.i("cmd", rows[i]);
 			tempString = rows[i];
 			if (tempString.indexOf("PID") == -1) {
 				if (bIsProcInfo == true) {
