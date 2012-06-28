@@ -114,8 +114,9 @@ public class ProcessMemoryUtil {
 		return result;
 	}
 
-	public String getCpuInfoByPid(int pid){
-		String result = "";
+	public String[] getCpuUserByPid(int pid){
+		String user = "";
+		String cpuPercent = "";
 
 		String tempPidString = "";
 		int tempPid = 0;
@@ -129,10 +130,11 @@ public class ProcessMemoryUtil {
 			
 			tempPid = Integer.parseInt(tempPidString);
 			if (tempPid == pid) {
-				result = item[INDEX_CPU];
+				cpuPercent = item[INDEX_CPU];
+				user = item[INDEX_UID];
 				break;
 			}
 		}
-		return result;
+		return new String[]{cpuPercent, user};
 	}
 }

@@ -38,6 +38,7 @@ public class Packages {
 		ArrayList<Process> res = new ArrayList<Process>();
 		Process temp = null;
 		ApplicationInfo appInfo = null;
+		String[] ts;
 		for (ActivityManager.RunningAppProcessInfo it:processInfoList){
 			temp = new Process();
 			appInfo = getAppInfo(it.processName);
@@ -45,7 +46,9 @@ public class Packages {
 			temp.setPid(it.pid);
 			temp.setUid(it.uid);
 			temp.setIcon(appInfo.loadIcon(pm));
-			temp.setCpuPercent(pmu.getCpuInfoByPid(it.pid));
+			ts = pmu.getCpuUserByPid(it.pid);
+			temp.setCpuPercent(ts[0]);
+			temp.setUser(ts[1]);
 			temp.setProcessName(it.processName);
 			temp.setPackageName(appInfo.packageName);
 			temp.setTitle(appInfo.loadLabel(pm).toString());
@@ -61,6 +64,7 @@ public class Packages {
 		ArrayList<Process> res = new ArrayList<Process>();
 		Process temp = null;
 		ApplicationInfo appInfo = null;
+		String[] ts;
 		for (ActivityManager.RunningServiceInfo it:serviceInfoList){
 			temp = new Process();
 			Log.i("service",it.process);
@@ -68,6 +72,9 @@ public class Packages {
 			temp.setPid(it.pid);
 			temp.setUid(it.uid);
 			temp.setIcon(appInfo.loadIcon(pm));
+			ts = pmu.getCpuUserByPid(it.pid);
+			temp.setCpuPercent(ts[0]);
+			temp.setUser(ts[1]);
 			temp.setProcessName(it.process);
 			temp.setPackageName(appInfo.packageName);
 			temp.setTitle(appInfo.loadLabel(pm).toString());
