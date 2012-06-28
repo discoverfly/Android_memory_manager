@@ -19,7 +19,7 @@ public final class R {
     public static final class id {
         public static final int activity=0x7f050008;
         public static final int activityView=0x7f05000a;
-        public static final int cpu=0x7f050004;
+        public static final int cpu=0x7f050005;
         public static final int icon=0x7f050000;
         public static final int imageviewone=0x7f050009;
         public static final int imageviewthree=0x7f05000f;
@@ -32,7 +32,7 @@ public final class R {
         public static final int othersView=0x7f050010;
         public static final int packagename=0x7f050002;
         public static final int pchose=0x7f050007;
-        public static final int pid=0x7f050005;
+        public static final int pid=0x7f050004;
         public static final int service=0x7f05000b;
         public static final int serviceView=0x7f05000d;
         public static final int serviceicon=0x7f050011;
@@ -41,6 +41,12 @@ public final class R {
         public static final int servicepid=0x7f050015;
         public static final int servicetitle=0x7f050012;
         public static final int serviceuid=0x7f050014;
+        public static final int t_bas_activity=0x7f05001b;
+        public static final int t_description=0x7f05001f;
+        public static final int t_num_activity=0x7f05001d;
+        public static final int t_num_running=0x7f05001e;
+        public static final int t_top_activity=0x7f05001c;
+        public static final int taskname=0x7f05001a;
         public static final int title=0x7f050001;
         public static final int uid=0x7f050003;
     }
@@ -49,6 +55,7 @@ public final class R {
         public static final int main=0x7f030001;
         public static final int serviceitem=0x7f030002;
         public static final int tabs=0x7f030003;
+        public static final int taskitem=0x7f030004;
     }
     public static final class string {
         public static final int app_name=0x7f040001;

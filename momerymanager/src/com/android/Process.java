@@ -10,6 +10,7 @@ public class Process implements Comparable<Process>{
 	private int uid;
 	private int memSize;
 	private String cpuPercent;
+	private String user;
 	private Drawable icon;
 	
 	public Process(){	
@@ -52,7 +53,9 @@ public class Process implements Comparable<Process>{
 		return cpuPercent;
 	}
 	
-	
+	public String getUser(){
+		return user;
+	}
 	
 	public Drawable getIcon(){
 		return icon;
@@ -82,6 +85,10 @@ public class Process implements Comparable<Process>{
 	
 	public void setCpuPercent(String tcpuPercent){
 		cpuPercent = tcpuPercent;
+	}
+	
+	public void setUser(String tuser){
+		user = tuser;
 	}
 	
 	public void setIcon(Drawable ticon){

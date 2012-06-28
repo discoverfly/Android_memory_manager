@@ -41,16 +41,16 @@ import android.app.Dialog;;
 
 public class MomerymanagerActivity extends TabActivity implements OnTabChangeListener {
 
-	private static final String LIST1_TAB_TAG = "Process";
-	private static final String LIST2_TAB_TAG = "Task";
-	private static final String LIST3_TAB_TAG = "Service";
+	private static final String pString = "进程";
+	private static final String tString = "任务";
+	private static final String sString = "服务";
 
-	private final String[] menuTitle = {"Kill selected processes","Select all","Not select any","Exit"};
+	private final String[] menuTitle = {"结束选中的进程","全选","取消所有选中的条目","取消"};
 	private final int[] menuID = {Menu.FIRST + 1, Menu.FIRST + 2,Menu.FIRST + 3, Menu.FIRST + 4};
 	private TabHost tabHost;
 	private TabSpec processTab, taskTab, serviceTab;
 	private SimpleAdapter processAdapter;
-	private List<String> toBeKilledProcess = null; 
+	private List<String> toBeKilledProcess = null;
 	private View processView, taskView,  serviceView; 
 	private ActivityManager activityManager;
 	private List<Map<String,Object>> processList;
@@ -65,9 +65,9 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		tabHost.setOnTabChangedListener(this);
 		activityManager=(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE); 
 		toBeKilledProcess = new ArrayList<String>();
-		processTab = tabHost.newTabSpec(LIST1_TAB_TAG);
+		processTab = tabHost.newTabSpec(pString);
 		tabHost.addTab(processTab
-				.setIndicator("Process",getApplicationContext().getResources().getDrawable(R.drawable.process))
+				.setIndicator(pString,getApplicationContext().getResources().getDrawable(R.drawable.process))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
 						processView = getProcessInfoView();
@@ -75,8 +75,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 					}
 				})
 				);
-		tabHost.addTab(tabHost.newTabSpec(LIST2_TAB_TAG)
-				.setIndicator("Task",getApplicationContext().getResources().getDrawable(R.drawable.ic_launcher))
+		tabHost.addTab(tabHost.newTabSpec(tString)
+				.setIndicator(tString,getApplicationContext().getResources().getDrawable(R.drawable.ic_launcher))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
 						taskView = getTaskInfoView();
@@ -85,8 +85,8 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				})
 				);
 
-		tabHost.addTab(tabHost.newTabSpec(LIST3_TAB_TAG)
-				.setIndicator(LIST3_TAB_TAG,getApplicationContext().getResources().getDrawable(R.drawable.task))
+		tabHost.addTab(tabHost.newTabSpec(sString)
+				.setIndicator(sString,getApplicationContext().getResources().getDrawable(R.drawable.task))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
 						serviceView = getServiceInfoView();
@@ -112,12 +112,17 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		switch(item.getItemId()){
 		case Menu.FIRST + 1:
 			Log.i("menu", "to KILL");
-		//Toast.makeText(getApplicationContext(), "to KIll", Toast.LENGTH_SHORT).show();
 		killSelectedProcess();
 		processAdapter = getProcessAdapter();
 		((ListView)processView).setAdapter(processAdapter);
 		return true;
 		case Menu.FIRST + 2:
+			setCheckBoxes(true);
+		return true;
+		case Menu.FIRST + 3:
+			setCheckBoxes(false);
+		return true;
+		case Menu.FIRST + 4:
 			return true;
 		}
 		return false;
@@ -130,7 +135,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		View it;
 		int j = 0;
 		for (int i = ((ListView)processView).getFirstVisiblePosition(); i < ((ListView)processView).getCount(); ++i,++j){
-			
+
 			it  = (View)((ListView)processView).getChildAt(i);
 			if (it != null)
 			{
@@ -138,23 +143,35 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				if (c.isChecked()){
 					packageName  = (String) processList.get(j).get("pkgname");
 					activityManager.killBackgroundProcesses(packageName);
-					Log.i("Kill ", " " +  packageName);
+					//Log.i("Kill ", " " +  packageName);
+					++cnt;
 				}
 				//TextView tv  = (TextView) it.findViewWithTag(R.id.packagename);
-				Log.i("in list View", " " + c.isChecked());
+				//Log.i("in list View", " " + c.isChecked());
 			}
 		}
 		Log.i("to Kill size ", toBeKilledProcess.size() + " ");
 	}
 
+	void setCheckBoxes(boolean flag){
+		View it;
+		for (int i = ((ListView)processView).getFirstVisiblePosition(); i < ((ListView)processView).getCount(); ++i){
+			it  = (View)((ListView)processView).getChildAt(i);
+			if (it != null)
+			{
+				CheckBox c = (CheckBox)it.findViewById(R.id.pchose);
+				c.setChecked(flag);
+			}
+		}
+	}
 
 	public void onTabChanged(String tabName) {
-		if(tabName.equals(LIST1_TAB_TAG)) {
+		if(tabName.equals(pString)) {
 			//do something
 		}
-		else if(tabName.equals(LIST2_TAB_TAG)) {
+		else if(tabName.equals(tString)) {
 			//do something
-		} else if (tabName.equals(LIST3_TAB_TAG)){
+		} else if (tabName.equals(sString)){
 
 		}
 	}
@@ -165,45 +182,6 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		ListView listView = (ListView) findViewById(R.id.list1);
 		processAdapter = getProcessAdapter();
 		listView.setAdapter(processAdapter);
-
-
-
-		//		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-		//
-		//			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-		//				if (toBeKilledProcess == null) toBeKilledProcess = new ArrayList<String>();
-		//				
-		//				String packageName = (String)processList.get(position).get("pkgname");
-		//				String processName = (String)processList.get(position).get("name");
-		//				Log.i("OnClick", processName + " ~~ " + packageName);
-		//				toBeKilledProcess.add(packageName);
-		//			}
-		//				new AlertDialog.Builder(parent.getContext())
-		//				.setMessage("Kill the process?")
-		//				.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-		//
-		//					public void onClick(DialogInterface dialog, int which) {
-		//						// TODO Auto-generated method stub
-		//						if (toBeKilledProcess == null) toBeKilledProcess = new ArrayList<String>();
-		//						String packageName = (String)processList.get(position).get("pkgname");
-		//						String processName = (String)processList.get(position).get("name");
-		//						toBeKilledProcess.add(packageName);
-		//						//Toast.makeText(getApplicationContext(), processName + "to be removed", Toast.LENGTH_SHORT).show();
-		//						//activityManager.killBackgroundProcesses(packageName);
-		//						Log.i("OnClick", processName + " ~~ " + packageName);
-		//						//ListView listView = (ListView) findViewById(R.id.list1);
-		//						//SimpleAdapter processAdapter = getProcessAdapter();
-		//						//listView.setAdapter(getProcessAdapter());
-		//					}
-		//				}).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-		//
-		//					public void onClick(DialogInterface dialog, int which) {
-		//						// TODO Auto-generated method stub
-		//						dialog.cancel();
-		//					}
-		//				}).create().show();
-		//			}
-		//});
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		return listView;
 	}
@@ -218,10 +196,10 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 			tmap = new HashMap<String, Object>();
 			tmap.put("icon",it.getIcon());
 			tmap.put("title",it.getTitle());
-			tmap.put("cpu", "  CPU: " + it.getcpuPercent());
+			tmap.put("cpu", "CPU: " + it.getcpuPercent());
 			tmap.put("pkgname",it.getPackageName());
-			tmap.put("uid", "UID: " + it.getUid());
-			tmap.put("pid","PID: " + it.getPid());
+			tmap.put("uid", "UID: " + it.getUser());
+			tmap.put("pid","    PID: " + it.getPid());
 			tmap.put("check", false);
 			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB ");
 			processList.add(tmap);
@@ -253,32 +231,35 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		ListView listView = (ListView) findViewById(R.id.list2);
 
 
-		List<String> listStrings = new ArrayList<String>();
-
+		//List<String> listStrings = new ArrayList<String>();
+		List<Map<String,Object>> taskList = new ArrayList<Map<String, Object> >();
+		Map<String,Object> tmap;
 		List<ActivityManager.RunningTaskInfo> out = activityManager.getRunningTasks(10);
-		StringBuffer res = new StringBuffer();
+		//StringBuffer res = new StringBuffer();
 		for (ActivityManager.RunningTaskInfo it:out){
-			res = new StringBuffer();
-			res.append("~name: " +it.toString());
-			res.append("\n~id : " + it.id);
-			res.append("\n~numActivities: " + it.numActivities);
-			res.append("\n~description: " + it.description);
-			if (it.description != null)Log.i("Task",it.description.toString());
-			listStrings.add(res.toString());
+
+			tmap = new HashMap<String, Object>();
+			tmap.put("t_name", "Name:          " + it.getClass().getSimpleName());
+			tmap.put("t_num_running", "Num of runnings:      " + it.numRunning);
+			tmap.put("t_num_activity","Num of activities:      " + it.numActivities + "    ");
+			if (it.topActivity != null)tmap.put("t_top_activity", "Top Activity:   " + it.topActivity.getPackageName());
+			else tmap.put("t_top_activity", "Top Activity:   ");
+
+			if (it.baseActivity != null)tmap.put("t_bas_activity","Bas Activity:   "+ it.baseActivity.getPackageName());
+			else tmap.put("t_bas_activity", "Bas Activity:   ");
+
+			if (it.description != null )tmap.put("t_description","Description:   " + it.description);
+			else tmap.put("t_description","Description:   None");
+			taskList.add(tmap);
 		}
 
-		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));
-
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
-				String item = (String) parent.getAdapter().getItem(position);
-				if(item != null){
-					((ArrayAdapter)parent.getAdapter()).remove(item);
-					Toast.makeText(getApplicationContext(), item + " has been removed", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-
+		SimpleAdapter taskAdapter =
+				new SimpleAdapter(this,taskList,R.layout.taskitem,
+						new String[]{"t_name","t_num_activity","t_num_running","t_bas_activity",
+						"t_top_activity","t_description"},
+						new int[]{R.id.taskname,R.id.t_num_activity,R.id.t_num_running,R.id.t_bas_activity,
+						R.id.t_top_activity, R.id.t_description});
+		listView.setAdapter(taskAdapter);
 
 		return listView;
 	}
@@ -288,27 +269,6 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		ListView listView = (ListView) findViewById(R.id.list3);
 		SimpleAdapter serviceAdapter = getServiceAdapter();
 		listView.setAdapter(serviceAdapter);
-		//		List<String> listStrings = new ArrayList<String>();
-		//		
-		//		List<ActivityManager.RunningServiceInfo> out = activityManager.getRunningServices(10);
-		//		String res = null;
-		//		for (ActivityManager.RunningServiceInfo it:out){
-		//			res = it.toString();
-		//			if (it.process != null) Log.i("Service", it.process);
-		//			listStrings.add(res);
-		//		}
-		//
-		//		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listStrings));
-		//
-		//		listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-		//			public void onItemClick(AdapterView<?> parent, View view, int position, long id) { 
-		//				String item = (String) parent.getAdapter().getItem(position);
-		//				if(item != null){
-		//					((ArrayAdapter)parent.getAdapter()).remove(item);
-		//					Toast.makeText(getApplicationContext(), item + " has been removed", Toast.LENGTH_SHORT).show();
-		//				}
-		//			}
-		//		});
 		return listView;
 	}
 
@@ -347,9 +307,9 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 			tmap.put("title",it.getTitle());
 			//tmap.put("name",it.getProcessName() + "  ");
 			tmap.put("pkgname",it.getPackageName());
-			tmap.put("pid"," PID: " + it.getPid());
-			tmap.put("uid", "UID: " + it.getUid());
-			tmap.put("memsize","   MEM: " + it.getMemSize() + " KB");
+			tmap.put("pid","   PID: " + it.getPid());
+			tmap.put("uid", "UID: " + it.getUser());
+			tmap.put("memsize","MEM: " + it.getMemSize() + " KB");
 			serviceList.add(tmap);
 		}
 		return serviceList;
