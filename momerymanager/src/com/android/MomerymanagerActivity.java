@@ -42,11 +42,12 @@ import android.app.Dialog;;
 
 public class MomerymanagerActivity extends TabActivity implements OnTabChangeListener {
 
-	private static final String pString = "进程";
-	private static final String tString = "任务";
-	private static final String sString = "服务";
+	private static final String pString = "Process";
+	private static final String tString = "Task";
+	private static final String sString = "Service";
 
-	private final String[] menuTitle = {"结束选中的进程","全选","取消所有选中的条目","取消"};
+	private final String[] menuTitle = {"Kill the selected process","Select all",
+			"Not selected any","Quit"};
 	private final int[] menuID = {Menu.FIRST + 1, Menu.FIRST + 2,Menu.FIRST + 3, Menu.FIRST + 4};
 	private TabHost tabHost;
 	private TabSpec processTab, taskTab, serviceTab;

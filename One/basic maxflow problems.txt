@@ -1,0 +1,11 @@
+最大流
+POJ 1273 Drainage Ditches	赤裸裸
+POJ 1274 The Perfect Stall	赤裸裸
+
+POJ 1698 Alice's Chance
+HOJ 1228 Power Network
+HOJ 2634 How to earn more	最小割
+ZOJ 2071 Technology Trader	最小割
+HOJ 1345 A Plug for UNIX
+
+POJ 1149 Pigs

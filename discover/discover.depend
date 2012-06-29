@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1315739434 source:d:\amprogram\discover\main.cpp
+	<iostream>
+	<cstdio>
+	<cstring>
+	<algorithm>
+	<vector>
+	<string>
+
