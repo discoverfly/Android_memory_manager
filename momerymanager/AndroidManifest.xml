@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
     <uses-permission android:name="android.permission.RESTART_PACKAGES"/>
+    <uses-permission android:name="android.permission.DELETE_CACHE_FILES"/>
 
     <application
         android:icon="@drawable/ic_launcher"

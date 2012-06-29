@@ -22,6 +22,7 @@ public class Packages {
 		allAppInfoList = pm.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
 		processInfoList= activityManager.getRunningAppProcesses();
 		serviceInfoList = activityManager.getRunningServices(100);
+		
 		//pm.getInstalledPackages(0);
 	}
 
@@ -64,6 +65,7 @@ public class Packages {
 		ArrayList<Process> res = new ArrayList<Process>();
 		Process temp = null;
 		ApplicationInfo appInfo = null;
+		
 		String[] ts;
 		for (ActivityManager.RunningServiceInfo it:serviceInfoList){
 			temp = new Process();

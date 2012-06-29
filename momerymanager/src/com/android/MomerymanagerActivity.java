@@ -1,5 +1,6 @@
 package com.android;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,6 +56,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	private ActivityManager activityManager;
 	private List<Map<String,Object>> processList;
 	private List<Map<String,Object>> serviceList;
+	Packages pk;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -66,6 +68,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		activityManager=(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE); 
 		toBeKilledProcess = new ArrayList<String>();
 		processTab = tabHost.newTabSpec(pString);
+		pk = new Packages(this);
 		tabHost.addTab(processTab
 				.setIndicator(pString,getApplicationContext().getResources().getDrawable(R.drawable.process))
 				.setContent(new TabHost.TabContentFactory() {
@@ -76,7 +79,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				})
 				);
 		tabHost.addTab(tabHost.newTabSpec(tString)
-				.setIndicator(tString,getApplicationContext().getResources().getDrawable(R.drawable.ic_launcher))
+				.setIndicator(tString,getApplicationContext().getResources().getDrawable(R.drawable.task))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
 						taskView = getTaskInfoView();
@@ -86,7 +89,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				);
 
 		tabHost.addTab(tabHost.newTabSpec(sString)
-				.setIndicator(sString,getApplicationContext().getResources().getDrawable(R.drawable.task))
+				.setIndicator(sString,getApplicationContext().getResources().getDrawable(R.drawable.service))
 				.setContent(new TabHost.TabContentFactory() {
 					public View createTabContent(String tag) {
 						serviceView = getServiceInfoView();
@@ -154,6 +157,7 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	}
 
 	void setCheckBoxes(boolean flag){
+		
 		View it;
 		for (int i = ((ListView)processView).getFirstVisiblePosition(); i < ((ListView)processView).getCount(); ++i){
 			it  = (View)((ListView)processView).getChildAt(i);
@@ -163,8 +167,38 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 				c.setChecked(flag);
 			}
 		}
+
+		//Toast.makeText(this, "cache size: " + getTotalCache() + "Byte",Toast.LENGTH_SHORT).show();
+
 	}
 
+//	long getTotalCache(){
+//		long res = 0;
+//		String mdir = "/data/data";
+//		res = getFileSize(new File(mdir));
+//		return res;
+//	}
+//	long getFileSize(File file){
+//		Log.i("debug", file.getPath());
+//		long res = 0;
+//		if (file == null);
+//		else if (file.isFile()){
+//			Log.i("getFileSize", file.getPath());
+//			res += file.length();
+//		}
+//		else if (file.isDirectory()){
+//		    Log.i("getFiles Size", file.getPath());
+//		    File[] sfiles = file.listFiles();
+//		    
+//			if (sfiles != null && sfiles.length > 0){
+//				
+//				Log.i("in dir", sfiles.length + "");
+//				//res += getFileSize(ifile);
+//			}
+//		}
+//		return res;
+//	}
+	
 	public void onTabChanged(String tabName) {
 		if(tabName.equals(pString)) {
 			//do something
@@ -172,7 +206,6 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		else if(tabName.equals(tString)) {
 			//do something
 		} else if (tabName.equals(sString)){
-
 		}
 	}
 
@@ -190,7 +223,6 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 	public List<Map<String,Object>> getProcessAdapterList(){
 		Map<String,Object> tmap; 
 		List<Map<String,Object>> processList = new ArrayList<Map<String,Object>>();
-		Packages pk = new Packages(this.getApplicationContext());
 		ArrayList<Process> pArrayList = pk.getProcesList();
 		for (Process it: pArrayList){
 			tmap = new HashMap<String, Object>();
@@ -239,26 +271,32 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		for (ActivityManager.RunningTaskInfo it:out){
 
 			tmap = new HashMap<String, Object>();
-			tmap.put("t_name", "Name:          " + it.getClass().getSimpleName());
-			tmap.put("t_num_running", "Num of runnings:      " + it.numRunning);
-			tmap.put("t_num_activity","Num of activities:      " + it.numActivities + "    ");
-			if (it.topActivity != null)tmap.put("t_top_activity", "Top Activity:   " + it.topActivity.getPackageName());
-			else tmap.put("t_top_activity", "Top Activity:   ");
+			tmap.put("t_name", "Name:");
+			tmap.put("t_namev", it.getClass().getSimpleName());
+			tmap.put("t_num_running", "Num of runnings:");
+			tmap.put("t_num_runningv",it.numRunning);
+			tmap.put("t_num_activity","Num of activities:");
+			tmap.put("t_num_activityv",it.numActivities);
+			tmap.put("t_top_activity", "Top Activity:");
+			if (it.topActivity != null)tmap.put("t_top_activityv", it.topActivity.getPackageName());
+			else tmap.put("t_top_activityv","");
 
-			if (it.baseActivity != null)tmap.put("t_bas_activity","Bas Activity:   "+ it.baseActivity.getPackageName());
-			else tmap.put("t_bas_activity", "Bas Activity:   ");
+			tmap.put("t_bas_activity","Bas Activity:");
+			if (it.baseActivity != null)tmap.put("t_bas_activityv",it.baseActivity.getPackageName());
+			else tmap.put("t_bas_activityv", "Bas Activity:   ");
 
-			if (it.description != null )tmap.put("t_description","Description:   " + it.description);
-			else tmap.put("t_description","Description:   None");
+			tmap.put("t_description","Description:");
+			if (it.description != null )tmap.put("t_descriptionv",it.description);
+			else tmap.put("t_descriptionv","None");
 			taskList.add(tmap);
 		}
 
 		SimpleAdapter taskAdapter =
 				new SimpleAdapter(this,taskList,R.layout.taskitem,
-						new String[]{"t_name","t_num_activity","t_num_running","t_bas_activity",
-						"t_top_activity","t_description"},
-						new int[]{R.id.taskname,R.id.t_num_activity,R.id.t_num_running,R.id.t_bas_activity,
-						R.id.t_top_activity, R.id.t_description});
+						new String[]{"t_name","t_namev","t_num_activity","t_num_activityv","t_num_running","t_num_runningv","t_bas_activity","t_bas_activityv",
+						"t_top_activity","t_top_activityv","t_description","t_descriptionv"},
+						new int[]{R.id.taskname,R.id.tasknamev,R.id.t_num_activity,R.id.t_num_activityv,R.id.t_num_running,R.id.t_num_runningv,R.id.t_bas_activity,R.id.t_bas_activityv,
+						R.id.t_top_activity, R.id.t_top_activityv,R.id.t_description,R.id.t_descriptionv});
 		listView.setAdapter(taskAdapter);
 
 		return listView;
@@ -298,7 +336,6 @@ public class MomerymanagerActivity extends TabActivity implements OnTabChangeLis
 		// TODO Auto-generated method stub
 		Map<String,Object> tmap; 
 		List<Map<String,Object>> serviceList = new ArrayList<Map<String,Object>>();
-		Packages pk = new Packages(this.getApplicationContext());
 		ArrayList<Process> pArrayList = pk.getServiceList();
 		Log.i("serviceList Size",pArrayList.size() + " ");
 		for (Process it: pArrayList){

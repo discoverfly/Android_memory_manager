@@ -14,7 +14,9 @@ public final class R {
         public static final int helloworld=0x7f020000;
         public static final int ic_launcher=0x7f020001;
         public static final int process=0x7f020002;
-        public static final int task=0x7f020003;
+        public static final int service=0x7f020003;
+        public static final int task=0x7f020004;
+        public static final int title=0x7f020005;
     }
     public static final class id {
         public static final int activity=0x7f050008;
@@ -41,12 +43,18 @@ public final class R {
         public static final int servicepid=0x7f050015;
         public static final int servicetitle=0x7f050012;
         public static final int serviceuid=0x7f050014;
-        public static final int t_bas_activity=0x7f05001b;
-        public static final int t_description=0x7f05001f;
-        public static final int t_num_activity=0x7f05001d;
-        public static final int t_num_running=0x7f05001e;
-        public static final int t_top_activity=0x7f05001c;
+        public static final int t_bas_activity=0x7f05001c;
+        public static final int t_bas_activityv=0x7f05001d;
+        public static final int t_description=0x7f050024;
+        public static final int t_descriptionv=0x7f050025;
+        public static final int t_num_activity=0x7f050020;
+        public static final int t_num_activityv=0x7f050021;
+        public static final int t_num_running=0x7f050022;
+        public static final int t_num_runningv=0x7f050023;
+        public static final int t_top_activity=0x7f05001e;
+        public static final int t_top_activityv=0x7f05001f;
         public static final int taskname=0x7f05001a;
+        public static final int tasknamev=0x7f05001b;
         public static final int title=0x7f050001;
         public static final int uid=0x7f050003;
     }
