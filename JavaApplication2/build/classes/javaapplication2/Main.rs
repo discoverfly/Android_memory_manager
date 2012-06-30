@@ -1,2 +1,0 @@
-javaapplication2.Stack
-javaapplication2.Main

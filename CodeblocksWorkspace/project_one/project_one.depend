@@ -1,8 +1,0 @@
-# depslib dependency file v1.0
-1337403678 source:d:\acmprogram\codeblocksworkspace\project_one\main.cpp
-	<iostream>
-	<algorithm>
-	<vector>
-	<cmath>
-	<cstdio>
-
